@@ -41,4 +41,30 @@ class GitHubScanner:
             return response.json()
         return []
 
+    def get_user_events(self, username):
+        """
+        Fetches user's public events.
+        """
+        if not Config.GITHUB_TOKEN:
+            return []
+            
+        url = f"{self.base_url}/users/{username}/events"
+        response = requests.get(url, headers=self.headers)
+        if response.status_code == 200:
+            return response.json()
+        return []
+
+    def get_repo_languages(self, username, repo_name):
+        """
+        Fetches language statistics for a repo.
+        """
+        if not Config.GITHUB_TOKEN:
+            return {}
+            
+        url = f"{self.base_url}/repos/{username}/{repo_name}/languages"
+        response = requests.get(url, headers=self.headers)
+        if response.status_code == 200:
+            return response.json()
+        return {}
+
 github_scanner = GitHubScanner()

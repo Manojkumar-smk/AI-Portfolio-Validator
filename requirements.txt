@@ -1,6 +1,10 @@
 flask
 python-dotenv
 supabase
+flask-cors
+reportlab
+pytest
+pytest-mock
 requests
 pypdf
 flask-cors

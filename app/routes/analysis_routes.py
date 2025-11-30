@@ -67,3 +67,15 @@ def compare_candidates():
 
     comparison = comparison_engine.compare_candidates(candidate_ids)
     return jsonify(comparison), 200
+
+@analysis_bp.route('/github-deep-check', methods=['POST'])
+def github_deep_check():
+    from app.services.github_validator import github_validator
+    data = request.json
+    github_url = data.get('github_url')
+    
+    if not github_url:
+        return jsonify({"error": "github_url is required"}), 400
+
+    validation_results = github_validator.validate_github_profile(github_url)
+    return jsonify(validation_results), 200

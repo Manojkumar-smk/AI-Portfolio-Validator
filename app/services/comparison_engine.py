@@ -10,7 +10,7 @@ class ComparisonEngine:
             results.append({
                 "candidate_id": cid,
                 "name": f"Candidate {cid}",
-                "overall_score": 85 + (cid % 10) # Simple mock score variation
+                "overall_score": 85 + (hash(str(cid)) % 10) # Simple mock score variation
             })
         
         # Sort by score
