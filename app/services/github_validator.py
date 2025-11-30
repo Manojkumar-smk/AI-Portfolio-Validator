@@ -192,6 +192,26 @@ class GitHubValidator:
     def _calculate_overall_risk(self, repos, events):
         if not repos and not events:
             return 90 # High risk
-        return 5 # Low risk default
+            
+        # Calculate risk based on other factors (Lower score = Lower risk)
+        # 1. Originality (Low originality -> High risk)
+        orig = self._originality_check(repos)
+        orig_risk = 100 - orig['score']
+        
+        # 2. Consistency (Low consistency -> High risk)
+        # We need profile to calc consistency, but here we only have repos/events passed.
+        # Let's use commit pattern as proxy for consistency here
+        commit = self._commit_pattern_authenticity(events)
+        commit_risk = 100 - commit['score']
+        
+        # 3. Project Depth (Low depth -> Medium risk)
+        depth = self._project_depth_check(repos)
+        depth_risk = 100 - depth['score']
+        
+        # Weighted Average
+        # Originality: 40%, Commit Pattern: 40%, Depth: 20%
+        overall_risk = (orig_risk * 0.4) + (commit_risk * 0.4) + (depth_risk * 0.2)
+        
+        return int(overall_risk)
 
 github_validator = GitHubValidator()

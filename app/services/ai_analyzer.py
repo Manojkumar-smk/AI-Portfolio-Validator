@@ -40,10 +40,23 @@ class AIAnalyzer:
         return github_url.rstrip('/').split('/')[-1]
 
     def _calculate_authenticity(self, github_data):
-        # Placeholder logic
+        # Use GitHubValidator for real authenticity check
         if not github_data.get('profile'):
             return 0
-        return 85 # Mock score
+            
+        from app.services.github_validator import github_validator
+        
+        # We can reconstruct the URL or just pass the username if we modify validator, 
+        # but validator takes URL. Let's use the profile URL.
+        profile_url = github_data['profile'].get('html_url')
+        if not profile_url:
+            return 50
+            
+        validation = github_validator.validate_github_profile(profile_url)
+        risk_score = validation.get('overall_risk_score', 50)
+        
+        # Authenticity is inverse of Risk
+        return 100 - risk_score
 
     def _calculate_skill_match(self, candidate_data, job_description):
         if not job_description:
